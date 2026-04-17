@@ -1,0 +1,4 @@
+hostname R3
+!
+router bgp 64500
+neighbor 100.0.0.10 remote-as 64509

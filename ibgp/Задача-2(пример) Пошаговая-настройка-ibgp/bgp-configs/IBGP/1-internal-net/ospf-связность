@@ -1,0 +1,17 @@
+#R1
+router ospf 1
+network 100.0.0.1 0.0.0.0 area 0
+network 10.0.0.0 0.255.255.255 area 0
+network 100.0.0.0 0.0.1.255 area 0
+
+#R2
+router ospf 1
+network 100.0.0.2 0.0.0.0 area 0
+network 10.0.0.0 0.255.255.255 area 0
+network 100.0.0.0 0.0.1.255 area 0
+
+#R4
+router ospf 1
+network 100.0.0.3 0.0.0.0 area 0
+network 10.0.0.0 0.255.255.255 area 0
+network 100.0.0.0 0.0.1.255 area 0

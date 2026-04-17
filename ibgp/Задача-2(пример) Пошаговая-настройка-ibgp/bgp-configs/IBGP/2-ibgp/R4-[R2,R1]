@@ -1,0 +1,11 @@
+#R3
+
+router bgp 64500
+network 100.0.0.0 mask 255.255.254.0
+neighbor 100.0.0.1 remote-as 64500
+neighbor 100.0.0.1 Next-Hop-self
+neighbor 100.0.0.1 update-source Loopback0
+
+neighbor 100.0.0.2 remote-as 64500
+neighbor 100.0.0.2 Next-Hop-self
+neighbor 100.0.0.2 update-source Loopback0

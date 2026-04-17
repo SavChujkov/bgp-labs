@@ -1,0 +1,8 @@
+
+
+outer bgp 64500
+neighbor 100.0.0.2 remote-as 64500
+#в анонсе Next-Hop для передаваемого маршрута меняется на адрес лупбека роутера 
+ neighbor 100.0.0.2 Next-Hop-self
+#tcp сессии для bgp устанавливаются с адреса Loopback0
+ neighbor 100.0.0.2 update-source Loopback0

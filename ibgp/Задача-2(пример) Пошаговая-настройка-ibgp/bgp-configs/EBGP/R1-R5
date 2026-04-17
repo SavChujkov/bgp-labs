@@ -1,0 +1,15 @@
+#R1
+router bgp 64500
+no synchronization
+bgp log-neighbor-changes
+network 100.0.0.0 mask 255.255.254.0
+neighbor 101.0.0.1 remote-as 64501
+no auto-summary
+
+#R5
+router bgp 64501
+no synchronization
+bgp log-neighbor-changes
+network 101.0.0.0 mask 255.255.254.0
+neighbor 100.0.0.2 remote-as 64500
+no auto-summary
