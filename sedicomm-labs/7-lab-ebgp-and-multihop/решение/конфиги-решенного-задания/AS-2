@@ -1,0 +1,16 @@
+AS-2-R#show run
+
+interface FastEthernet0/0
+ ip address 192.168.20.3 255.255.255.0
+ duplex auto
+ speed auto
+
+router bgp 2
+ no synchronization
+ bgp log-neighbor-changes
+ neighbor 192.168.10.1 remote-as 1
+ neighbor 192.168.10.1 ebgp-multihop 2
+ neighbor 192.168.10.1 disable-connected-check
+ no auto-summary
+
+ip route 192.168.10.0 255.255.255.0 192.168.20.2
