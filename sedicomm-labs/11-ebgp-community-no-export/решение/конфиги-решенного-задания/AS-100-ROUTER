@@ -1,0 +1,52 @@
+
+interface Loopback0
+ ip address 91.55.46.253 255.255.255.255
+
+interface FastEthernet0/0
+ ip address 10.0.240.253 255.255.255.252
+ speed 100
+ full-duplex
+
+interface FastEthernet0/1
+ ip address 10.0.10.9 255.255.255.252
+ speed 100
+ full-duplex
+
+interface FastEthernet1/0
+ ip address 10.0.20.1 255.255.255.252
+ speed 100
+ full-duplex
+
+router bgp 100
+ no synchronization
+ bgp log-neighbor-changes
+ network 91.55.46.248 mask 255.255.255.252
+ network 91.55.46.252 mask 255.255.255.252
+ neighbor AS100 peer-group
+ neighbor AS100 route-map ANN_DENY_2 out
+ neighbor 10.0.10.10 remote-as 1100
+ neighbor 10.0.10.10 peer-group AS100
+ neighbor 10.0.20.2 remote-as 1500
+ neighbor 10.0.20.2 peer-group AS100
+ neighbor 10.0.240.254 remote-as 500
+ neighbor 10.0.240.254 send-community
+ neighbor 10.0.240.254 route-map ANN_POLICY out
+ no auto-summary
+
+ip http server
+no ip http secure-server
+
+ip prefix-list 10 seq 5 permit 91.55.46.248/30
+
+ip prefix-list 20 seq 5 permit 91.55.46.248/30
+
+route-map ANN_POLICY permit 10
+ match ip address prefix-list 10
+ set community no-export
+
+route-map ANN_POLICY permit 20
+
+route-map ANN_DENY_2 deny 10
+ match ip address prefix-list 20
+
+route-map ANN_DENY_2 permit 20
