@@ -1,0 +1,106 @@
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname AS-1100-R
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no aaa new-model
+memory-size iomem 5
+ip cef
+!
+!
+!
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+archive
+ log config
+  hidekeys
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 10.0.10.10 255.255.255.252
+ speed 100
+ full-duplex
+!
+interface FastEthernet0/1
+ ip address 10.0.10.6 255.255.255.252
+ speed 100
+ full-duplex
+!
+interface FastEthernet1/0
+ ip address 10.0.10.1 255.255.255.252
+ speed 100
+ full-duplex
+!
+router bgp 1100
+ no synchronization
+ bgp log-neighbor-changes
+ neighbor 10.0.10.2 remote-as 500
+ neighbor 10.0.10.5 remote-as 1000
+ neighbor 10.0.10.9 remote-as 100
+ no auto-summary
+!
+ip forward-protocol nd
+!
+!
+ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+!
+!
+end
