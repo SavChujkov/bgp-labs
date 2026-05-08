@@ -1,0 +1,97 @@
+
+interface Loopback0
+ ip address 100.0.0.5 255.255.255.255
+!
+interface FastEthernet0/0
+ ip address 102.0.0.6 255.255.255.252
+ speed 100
+ full-duplex
+!
+interface FastEthernet0/1
+ ip address 105.0.0.6 255.255.255.252
+ speed 100
+ full-duplex
+!
+interface FastEthernet1/0
+ ip address 101.0.0.6 255.255.255.252
+ speed 100
+ full-duplex
+!
+interface FastEthernet2/0
+ no switchport
+ ip address 150.0.0.6 255.255.255.252
+ duplex full
+ speed 100
+!
+interface FastEthernet2/1
+ no switchport
+ ip address 10.0.0.2 255.255.255.252
+ duplex full
+ speed 100
+
+
+router bgp 64500
+ no synchronization
+ bgp log-neighbor-changes
+ network 100.0.0.0 mask 255.255.254.0
+ network 172.255.255.254 mask 255.255.255.255
+ neighbor 100.0.0.6 remote-as 64500
+ neighbor 100.0.0.6 update-source Loopback0
+ neighbor 100.0.0.6 next-hop-self
+ neighbor 100.0.0.6 route-map DENIED_ANNOUNCES out
+ neighbor 101.0.0.5 remote-as 65501
+ neighbor 101.0.0.5 advertise-map ADVER-POL-ISP-1 exist-map EXIST-MAP
+ neighbor 102.0.0.5 remote-as 64502
+ neighbor 102.0.0.5 route-map ADVER-POL-ISP-3 out
+ neighbor 105.0.0.5 remote-as 64513
+ neighbor 105.0.0.5 advertise-map ADVER-POL-ISP-2 non-exist-map EXIST-MAP
+ neighbor 150.0.0.5 remote-as 100
+
+
+ip route 172.255.255.254 255.255.255.255 Null0 track 1
+ip route 100.0.0.0 255.255.254.0 Null0
+ip route 100.0.0.6 255.255.255.255 10.0.0.1
+!
+
+
+ip access-list standard DENIED_ANNOUNCES
+ permit 172.255.255.254
+ permit 172.255.255.255
+
+ip sla 1
+ icmp-echo 103.0.0.1 source-ip 101.0.0.6
+ threshold 100
+ frequency 10
+
+ip sla schedule 1 life forever start-time now
+  access-list 10 permit 150.0.0.0 0.0.0.3
+  access-list 20 permit 172.255.255.254
+
+
+route-map ADVER-POL-IBGP permit 100
+ match ip address DENIED_ANNOUNCES deny
+!
+route-map EXIST-MAP permit 10
+ match ip address 20
+!
+route-map ADVER-POL-ISP-1 permit 10
+ match ip address 10
+!
+route-map ADVER-POL-ISP-1 permit 100
+ match ip address DENIED_ANNOUNCES deny
+!
+route-map ADVER-POL-ISP-2 permit 10
+ match ip address 10
+!
+route-map ADVER-POL-ISP-2 permit 100
+ match ip address DENIED_ANNOUNCES deny
+!
+route-map ADVER-POL-ISP-3 deny 10
+ match ip address 10
+!
+route-map ADVER-POL-ISP-3 permit 20
+!
+route-map ADVER-POL-ISP-3 permit 100
+ match ip address DENIED_ANNOUNCES deny
+!
+
