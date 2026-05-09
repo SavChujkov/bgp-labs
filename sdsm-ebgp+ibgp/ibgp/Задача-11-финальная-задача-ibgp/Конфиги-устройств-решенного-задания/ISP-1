@@ -1,0 +1,116 @@
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname ISP-1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no aaa new-model
+memory-size iomem 5
+ip cef
+!
+!
+!
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+archive
+ log config
+  hidekeys
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 103.0.0.2 255.255.255.252
+ speed 100
+ full-duplex
+!
+interface FastEthernet0/1
+ ip address 101.0.0.1 255.255.255.252
+ speed 100
+ full-duplex
+!
+interface FastEthernet1/0
+ ip address 101.0.0.5 255.255.255.252
+ speed 100
+ full-duplex
+!
+interface FastEthernet2/0
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+router bgp 65501
+ no synchronization
+ bgp log-neighbor-changes
+ network 101.0.0.0 mask 255.255.255.240
+ network 101.0.0.0 mask 255.255.255.248
+ neighbor 101.0.0.2 remote-as 64500
+ neighbor 101.0.0.6 remote-as 64500
+ neighbor 103.0.0.1 remote-as 64503
+ no auto-summary
+!
+ip forward-protocol nd
+ip route 101.0.0.0 255.255.255.240 Null0
+ip route 101.0.0.0 255.255.255.248 Null0
+!
+!
+ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+!
+!
+end

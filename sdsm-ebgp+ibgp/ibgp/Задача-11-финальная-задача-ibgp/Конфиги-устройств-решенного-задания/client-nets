@@ -1,0 +1,144 @@
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname Service-503
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no aaa new-model
+memory-size iomem 5
+ip cef
+!
+!
+!
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+archive
+ log config
+  hidekeys
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 50.1.1.1 255.255.255.255
+!
+interface Loopback1
+ ip address 50.1.2.1 255.255.255.255
+!
+interface Loopback2
+ ip address 50.1.3.1 255.255.255.255
+!
+interface FastEthernet0/0
+ ip address 103.0.0.1 255.255.255.252
+ speed 100
+ full-duplex
+!
+interface FastEthernet0/1
+ ip address 103.0.0.5 255.255.255.252
+ speed 100
+ full-duplex
+!
+interface FastEthernet1/0
+ ip address 103.0.0.9 255.255.255.252
+ speed 100
+ full-duplex
+!
+router bgp 64503
+ no synchronization
+ bgp log-neighbor-changes
+ network 50.1.1.0 mask 255.255.255.0
+ network 50.1.2.0 mask 255.255.255.0
+ network 50.1.3.0 mask 255.255.255.0
+ network 103.0.0.0 mask 255.255.255.240
+ neighbor 103.0.0.2 remote-as 65501
+ neighbor 103.0.0.2 route-map ANN_NET out
+ neighbor 103.0.0.6 remote-as 64513
+ neighbor 103.0.0.6 route-map ANN_NET out
+ neighbor 103.0.0.10 remote-as 64502
+ neighbor 103.0.0.10 route-map ANN_NET out
+ no auto-summary
+!
+ip forward-protocol nd
+ip route 50.1.1.0 255.255.255.0 Null0
+ip route 50.1.2.0 255.255.255.0 Null0
+ip route 50.1.3.0 255.255.255.0 Null0
+ip route 103.0.0.0 255.255.255.240 Null0
+!
+!
+ip http server
+no ip http secure-server
+!
+ip access-list standard ANN_NET
+ permit 103.0.0.0 0.0.0.3
+ permit 103.0.0.4 0.0.0.3
+ permit 103.0.0.8 0.0.0.3
+ permit 50.1.1.0 0.0.0.255
+ permit 50.1.2.0 0.0.0.255
+ permit 50.1.3.0 0.0.0.255
+!
+!
+!
+!
+route-map STUB_AS_POLICY permit 10
+ match ip address ANN_NET
+!
+route-map STUB_AS_POLICY deny 15
+!
+route-map ANN_NET permit 10
+ match ip address ANN_NET
+!
+route-map ANN_NET deny 15
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+!
+!
+end

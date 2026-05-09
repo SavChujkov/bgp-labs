@@ -1,4 +1,3 @@
-Current configuration : 3646 bytes
 !
 version 12.4
 service timestamps debug datetime msec
@@ -125,13 +124,17 @@ router bgp 64500
  neighbor 100.0.0.6 remote-as 64500
  neighbor 100.0.0.6 update-source Loopback0
  neighbor 100.0.0.6 next-hop-self
+ neighbor 100.0.0.6 route-map INCOM-ANN-IBGP in
  neighbor 100.0.0.6 route-map DENIED-ADVER-POL-IBGP out
  neighbor 101.0.0.5 remote-as 65501
+ neighbor 101.0.0.5 route-map INCOM-ANN-ISP-1 in
  neighbor 101.0.0.5 route-map DENIED-ADVER-POL-ISP-1 out
  neighbor 101.0.0.5 advertise-map ADVER-POL-ISP-1 exist-map EXIST-MAP
  neighbor 102.0.0.5 remote-as 64502
+ neighbor 102.0.0.5 route-map INCOM-ANN-ISP-3 in
  neighbor 102.0.0.5 route-map DENIED-ADVER-POL-ISP-3 out
  neighbor 105.0.0.5 remote-as 64513
+ neighbor 105.0.0.5 route-map INCOM-ANN-ISP-2 in
  neighbor 105.0.0.5 route-map DENIED-ADVER-POL-ISP-2 out
  neighbor 105.0.0.5 advertise-map ADVER-POL-ISP-2 non-exist-map EXIST-MAP
  neighbor 150.0.0.5 remote-as 100
@@ -146,6 +149,12 @@ ip route 100.0.0.6 255.255.255.255 10.0.0.1
 ip http server
 no ip http secure-server
 !
+ip access-list standard CLIENT_FILIAL_1_NETS
+ permit 50.1.1.0 0.0.0.255
+ip access-list standard CLIENT_FILIAL_2_NETS
+ permit 50.1.2.0 0.0.0.255
+ip access-list standard CLIENT_FILIAL_3_NETS
+ permit 50.1.3.0 0.0.0.255
 ip access-list standard DENIED_ANNOUNCES
  permit 172.255.255.254
  permit 172.255.255.255
@@ -159,6 +168,12 @@ access-list 10 permit 150.0.0.0 0.0.0.3
 access-list 20 permit 172.255.255.254
 !
 !
+!
+route-map INCOM-ANN-IBGP permit 10
+ match ip address CLIENT_FILIAL_1_NETS CLIENT_FILIAL_2_NETS CLIENT_FILIAL_3_NETS
+ set local-preference 50
+!
+route-map INCOM-ANN-IBGP permit 20
 !
 route-map DENIED-ADVER-POL-IBGP deny 10
  match ip address DENIED_ANNOUNCES
@@ -178,6 +193,23 @@ route-map ADVER-POL-ISP-3 deny 10
  match ip address 10
 !
 route-map ADVER-POL-ISP-3 permit 20
+!
+route-map INCOM-ANN-ISP-1 permit 10
+ match ip address CLIENT_FILIAL_1_NETS CLIENT_FILIAL_2_NETS CLIENT_FILIAL_3_NETS
+ set local-preference 200
+!
+route-map INCOM-ANN-ISP-1 permit 15
+!
+route-map INCOM-ANN-ISP-2 permit 10
+ match ip address CLIENT_FILIAL_1_NETS CLIENT_FILIAL_2_NETS CLIENT_FILIAL_3_NETS
+ set local-preference 100
+!
+route-map INCOM-ANN-ISP-2 permit 15
+!
+route-map INCOM-ANN-ISP-3 deny 10
+ match ip address CLIENT_FILIAL_1_NETS CLIENT_FILIAL_2_NETS CLIENT_FILIAL_3_NETS
+!
+route-map INCOM-ANN-ISP-3 permit 20
 !
 route-map DENIED-ADVER-POL-ISP-2 deny 10
  match ip address DENIED_ANNOUNCES
