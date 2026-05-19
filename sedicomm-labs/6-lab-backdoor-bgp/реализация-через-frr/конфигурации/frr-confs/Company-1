@@ -1,0 +1,27 @@
+
+frr version 10.3.1
+frr defaults traditional
+hostname debian
+log syslog
+no ipv6 forwarding
+service integrated-vtysh-config
+!
+password cisco
+enable password cisco
+!
+router bgp 100
+ no bgp ebgp-requires-policy
+ neighbor 192.168.20.20 remote-as 3
+ !
+ address-family ipv4 unicast
+  network 100.0.0.1/32 backdoor
+  network 150.0.0.0/32
+ exit-address-family
+exit
+!
+router ospf
+ ospf router-id 150.0.0.1
+ network 150.0.0.0/30 area 0
+ network 192.168.10.0/24 area 0
+exit
+!
