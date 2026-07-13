@@ -1,0 +1,47 @@
+{
+  "freeTextAnnotations": [],
+  "freeShapeAnnotations": [],
+  "trafficRateAnnotations": [],
+  "groupStyleAnnotations": [],
+  "networkNodeAnnotations": [],
+  "nodeAnnotations": [
+    {
+      "id": "link-r",
+      "position": {
+        "x": 320,
+        "y": 440
+      }
+    },
+    {
+      "id": "bala-r",
+      "position": {
+        "x": 220,
+        "y": 340
+      }
+    },
+    {
+      "id": "phcert-r",
+      "position": {
+        "x": 420,
+        "y": 340
+      }
+    },
+    {
+      "id": "cloud-r",
+      "position": {
+        "x": 320,
+        "y": 220
+      }
+    },
+    {
+      "id": "dashboard",
+      "position": {
+        "x": 840,
+        "y": 360
+      }
+    }
+  ],
+  "edgeAnnotations": [],
+  "aliasEndpointAnnotations": [],
+  "viewerSettings": {}
+}

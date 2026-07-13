@@ -1,0 +1,67 @@
+name: lab-env
+
+topology:
+  defaults:
+    kind: linux
+    image: quay.io/frrouting/frr:10.5.0
+
+  nodes:
+    r1:
+      binds:
+        - configs/r1/frr.conf:/etc/frr/frr.conf
+        - configs/r1/daemons:/etc/frr/daemons
+
+    r2:
+      binds:
+        - configs/r2/frr.conf:/etc/frr/frr.conf
+        - configs/r2/daemons:/etc/frr/daemons
+
+    r3:
+      binds:
+        - configs/r3/frr.conf:/etc/frr/frr.conf
+        - configs/r3/daemons:/etc/frr/daemons
+
+    r4:
+      binds:
+        - configs/r4/frr.conf:/etc/frr/frr.conf
+        - configs/r4/daemons:/etc/frr/daemons
+
+    r5:
+      binds:
+        - configs/r5/frr.conf:/etc/frr/frr.conf
+        - configs/r5/daemons:/etc/frr/daemons
+        
+    dashboard:
+      kind: linux
+      image: vadaszgergo/bgp-dashboard:0.1.0
+      image-pull-policy: IfNotPresent   # use cached image after first pull
+      ports:
+        - 8088:8080
+      env:
+        LAB_TOPOLOGY: /lab/topology.yml
+        LAB_PREFIX: clab-lab-env
+      binds:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ./lab-env.clab.yaml:/lab/topology.yml:ro
+        - ./configs:/lab/configs:ro
+
+  links:
+    # R1 <-> R2
+    - endpoints: ["r1:eth1", "r2:eth1"]
+      # ipv4: ["10.0.20.1/30", "10.0.20.2/30"]
+
+    # R1 <-> R3
+    - endpoints: ["r1:eth2", "r3:eth1"]
+      # ipv4: ["10.0.10.6/30", "10.0.10.5/30"]
+
+    # R2 <-> R4
+    - endpoints: ["r2:eth2", "r4:eth1"]
+      # ipv4: ["10.0.10.2/30", "10.0.10.1/30"]
+
+    # R3 <-> R5
+    - endpoints: ["r3:eth2", "r5:eth1"]
+      # ipv4: ["10.0.10.10/30", "10.0.10.9/30"]
+
+    # R4 <-> R5
+    - endpoints: ["r4:eth2", "r5:eth2"]
+      # ipv4: ["10.0.10.14/30", "10.0.10.13/30"]
