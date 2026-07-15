@@ -1,0 +1,76 @@
+name: lab-env
+
+topology:
+  nodes:
+
+    link-r:
+      kind: linux
+      image: quay.io/frrouting/frr:10.5.0
+      exec:
+        - /scripts/init-link-r.sh
+      binds:
+        - ./scripts:/scripts
+        - ./configs/link-r/daemons:/etc/frr/daemons
+        - ./configs/link-r/frr.conf:/etc/frr/frr.conf
+        - ./configs/vtysh.conf:/etc/frr/vtysh.conf
+
+    bala-r:
+      kind: linux
+      image: quay.io/frrouting/frr:10.5.0
+      exec:
+        - /scripts/init-bala-r.sh
+      binds:
+        - ./scripts:/scripts
+        - ./configs/bala-r/daemons:/etc/frr/daemons
+        - ./configs/bala-r/frr.conf:/etc/frr/frr.conf
+        - ./configs/vtysh.conf:/etc/frr/vtysh.conf
+
+    phcert-r:
+      kind: linux 
+      image: quay.io/frrouting/frr:10.5.0
+      exec:
+        - /scripts/init-phcert-r.sh
+      binds:
+        - ./scripts:/scripts
+        - ./configs/phcert-r/daemons:/etc/frr/daemons
+        - ./configs/phcert-r/frr.conf:/etc/frr/frr.conf
+        - ./configs/vtysh.conf:/etc/frr/vtysh.conf
+
+    cloud-r:
+      kind: linux
+      image: quay.io/frrouting/frr:10.5.0
+      exec:
+        - /scripts/init-cloud-r.sh
+      binds:
+        - ./scripts:/scripts
+        - ./configs/cloud-r/daemons:/etc/frr/daemons
+        - ./configs/cloud-r/frr.conf:/etc/frr/frr.conf
+        - ./configs/vtysh.conf:/etc/frr/vtysh.conf
+
+
+#   |-------cloud-r--------|
+#   |                      |
+#bala-r----------------phcert-r   
+#   |                      |
+#   |------- link-r -------|
+
+  links:
+    # cloud-r <-> bala-r
+    - endpoints: ["cloud-r:eth1", "bala-r:eth1"]
+      #ipv4: ["101.0.0.10/30", "101.0.0.9/30"]
+
+    # cloud-r <-> phcert-r
+    - endpoints: ["cloud-r:eth2", "phcert-r:eth1"]
+      #ipv4: ["102.0.0.10/30", "102.0.0.9/30"]
+
+    # bala-r <-> phcert-r
+    - endpoints: ["bala-r:eth2", "phcert-r:eth2"]
+      #ipv4: ["101.0.0.5/30", "101.0.0.6/30"]
+
+    # link-r <-> bala-r
+    - endpoints: ["link-r:eth1", "bala-r:eth3"]
+      #ipv4: ["101.0.0.2/30", "101.0.0.1/30"]
+
+    # link-r <-> phcert-r
+    - endpoints: ["link-r:eth2", "phcert-r:eth3"]
+      #ipv4: ["102.0.0.2/30", "102.0.0.1/30"]
